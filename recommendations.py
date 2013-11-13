@@ -9,6 +9,22 @@ critics={'Lisa':{'Lady':2.5,'Snakes':3.5, 'Luck':3.0, 'SuperMan':1.5, 'Dupree':2
          'Jack':{'Lady':2.0,'Snakes':3.0, 'Luck':3.0, 'SuperMan':0.5, 'Dupree':2.5, 'Night':1.0},
          'Toby':{'Lady':3.0,'Snakes':3.0, 'Luck':3.0, 'Night':4.0}
 }
+#Similarity defined by the
+def sim_tanimoto(preferences, person1, person2):
+    pref_pers1=preferences[person1]
+    pref_pers2=preferences[person2]
+
+    shared_items={}
+    for item in preferences[person1]:
+        if item in preferences[person2]:
+            shared_items[item]=1
+
+    intersection=float(len(shared_items))
+    union=float(len(set(pref_pers1).union(pref_pers2)))
+    tanimoto=intersection/union
+    return tanimoto
+
+
 
 #Returns Euclidean Distance Similarity
 

@@ -3,16 +3,18 @@ from pydelicious import get_popular, get_userposts,get_urlposts
 import time
 import random
 import recommendations
-
-def initializeUserDictionary(tag,count=5):
+'''
+def initializeUserDictionary(tag,count=5, group_by='user'):
     user_dict={}
     #get the top count popular posts
-    for p1 in get_popular(tag=tag)[0:count]:
+    for p1 in get_popular()[0:count]:
         #find all users that posted this
         for p2 in get_urlposts(p1['url']):
-            user=p2['user']
+            user=p2[group_by]
             user_dict[user]={}
     return user_dict
+
+
 
 def fillItems(user_dict):
     all_items={}
@@ -38,8 +40,8 @@ def fillItems(user_dict):
 
 
 
-#dictionary_users = initializeUserDictionary(tag="programming")
-#print fillItems(dictionary_users)
+dictionary_users = initializeUserDictionary(tag="programming",group_by='tags')
+print fillItems(dictionary_users)
 #This gives me any user at random. Dictionary.Keys gives me all the users.
 #user=dictionary_users.keys()[random.randint(0,len(dictionary_users)-1)]
 
@@ -58,3 +60,9 @@ preferences=recommendations.loadMovieLens()
 
 print recommendations.getRecommendations(preferences,'7',similarity=recommendations.sim_distance)
 
+
+
+print recommendations.sim_tanimoto(recommendations.critics, 'Toby','Lisa')
+print recommendations.sim_distance(recommendations.critics, 'Toby', 'Lisa')
+
+'''
