@@ -38,13 +38,23 @@ def fillItems(user_dict):
 
 
 
-dictionary_users = initializeUserDictionary(tag="programming")
-print fillItems(dictionary_users)
+#dictionary_users = initializeUserDictionary(tag="programming")
+#print fillItems(dictionary_users)
 #This gives me any user at random. Dictionary.Keys gives me all the users.
-user=dictionary_users.keys()[random.randint(0,len(dictionary_users)-1)]
+#user=dictionary_users.keys()[random.randint(0,len(dictionary_users)-1)]
 
-print user
+#print user
 
-print recommendations.topMatches(dictionary_users,user,n=5,similarity=recommendations.sim_distance)
-print recommendations.getRecommendations(dictionary_users,user,similarity=recommendations.sim_distance)[0:10]
+#print recommendations.topMatches(dictionary_users,user,n=5,similarity=recommendations.sim_distance)
+#print recommendations.getRecommendations(dictionary_users,user,similarity=recommendations.sim_distance)[0:10]
+
+
+#this gives me a list of movies and the movies most similar to them.
+#itemSim = recommendations.calculateSimilarItems(recommendations.critics)
+
+#print recommendations.getRecommendedItems(recommendations.critics,itemSim, 'Toby' )
+
+preferences=recommendations.loadMovieLens()
+
+print recommendations.getRecommendations(preferences,'7',similarity=recommendations.sim_distance)
 

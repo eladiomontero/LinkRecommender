@@ -24,7 +24,9 @@ def sim_distance(preferences, person1, person2):
         return 0
     #Gets the Euclidean Distance formula. Para cada pelicula en comun, restela y eleve a la 2
     sum_of_squares=0
+    item=""
     sum_of_squares=sum(pow(preferences[person1][item]-preferences[person2][item],2) for item in shared_items)
+    if sum_of_squares==0: return 0
     return 1/sqrt(sum_of_squares)
 
 #Returns Pearson Correlation index
@@ -106,3 +108,63 @@ def transformPreferences(preferences):
             #FLip item and person
             result[item][person]=preferences[person][item]
     return result
+
+def calculateSimilarItems(preferences, n=10):
+    #Create a dictionary of items showing which other items they are most similar to.
+    result={}
+    #Invert the preference matrix to be item centric
+    itemPreferences=transformPreferences(preferences)
+    c=0
+    for item in itemPreferences:
+        #Status updates for large datasets
+        c+=1
+        if c%100==0: print "%d / %d " % (c,len(itemPreferences))
+        #Find the most similar items to this one
+        scores = topMatches(itemPreferences,item,n=n,similarity=sim_distance)
+        result[item]=scores
+    return result
+
+def getRecommendedItems(preferences, itemMatch, user):
+    userRatings=preferences[user]
+    scores={}
+    totalSimilitude={}
+
+    #Loop over items rates by this user
+
+    for (item, rating) in userRatings.items():
+        #Loop over items similar to this one
+        for (similarity, item2) in itemMatch[item]:
+            #Ignore if this user has already rated this item
+            if item2 in userRatings: continue
+            #Weighted sum of rating times similarity
+            scores.setdefault(item2,0)
+            scores[item2]+=similarity*rating
+
+            #Sum of all similarities
+            totalSimilitude.setdefault(item2,0)
+            totalSimilitude[item2]+=similarity
+
+    #Divide each total score by total weighting to get an average
+    rankings=[(score/totalSimilitude[item],item) for item, score in scores.items()]
+
+    #Return the rankings from highest to lowest
+    rankings.sort()
+    rankings.reverse()
+    return rankings
+
+#load the MovieLens dataset
+
+def loadMovieLens(path="./data"):
+    #Get Movie Titles
+    movies={}
+    for line in open(path+"/movies.dat"):
+        (id,title,genre)=line.split("::")
+        movies[id]=title
+    #Load Data
+    preferences={}
+    for line in open(path+"/ratings.dat"):
+        (user, movieID, rating, time)=line.split("::")
+        preferences.setdefault(user,{})
+        preferences[user][movies[movieID]]=float(rating)
+    return preferences
+
